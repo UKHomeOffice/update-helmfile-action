@@ -7,7 +7,7 @@ const yaml = require('js-yaml');
 async function run() {
 
 
-    const doc = yaml.safeLoad(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
+    const doc = yaml.load(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
 
     core.info(doc);
 
