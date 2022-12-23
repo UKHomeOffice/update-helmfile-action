@@ -9,12 +9,12 @@ async function run() {
 
     const doc = yaml.load(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
 
-    core.info(doc);
+    console.log(doc);
 
     const repositoryNames = Object.keys(doc.versions).map((key) => {key.replaceAll("_", "-")});
 
     repositoryNames.forEach((repositoryName) => {
-        core.info(repositoryName);
+        console.log(repositoryName);
     });
 
     const inputs = getActionInputs([
