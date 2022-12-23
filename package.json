@@ -1,0 +1,26 @@
+{
+  "name": "update-helmfile",
+  "version": "1.0.0",
+  "description": "Raise PR on helmfile with latest service version",
+  "scripts": {
+    "lint": "eslint",
+    "test": "jest",
+    "build": "ncc build ./src/index.js -o ./dist --source-map --license licenses.txt",
+    "all": "npm run lint && npm run test && npm run build"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "semver": "^7.3.8"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.36.0",
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-github": "^4.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.3.1"
+  }
+}
