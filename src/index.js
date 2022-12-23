@@ -11,20 +11,20 @@ async function run() {
 
     // Fetch the list of tags for each repository
     const tagsPromises = repositoryNames.map(async (repositoryName) => {
-        const { data: tags } = await github.getOctokit(inputs.github_token).rest.git.listMatchingRefs({
+        const { data: tags } = await github.getOctokit(inputs.github_token).rest.repos.listTags({
             owner: github.context.payload.repository.owner.login,
             repo: repositoryName,
-            ref: "tags/",
         });
 
-        core.info(tags[0]);
+        core.info(tags[0].name);
 
         // remove invalid semver tags
-        const validTags = tags.filter((tag) => semver.valid(tag.ref.replace("refs/tags/", "")));
+        //semver: tag.ref?.replace(/^refs\/tags\//g, ""),
+        const validTags = tags.filter((tag) => semver.valid(tag.name));
 
-        core.info(validTags[0]);
+        core.info(validTags[0].name);
         // Sort the tags by version number and return the tag with the highest version number
-        return validTags.sort((a, b) => semver.rcompare(a.ref, b.ref))[0];
+        return validTags.sort((a, b) => semver.rcompare(a.name, b.name))[0];
     });
 
     // Wait for all promises to resolve and store the results in an array
