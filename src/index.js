@@ -17,8 +17,14 @@ async function run() {
             ref: "tags/",
         });
 
+        core.info(tags[0]);
+
+        // remove invalid semver tags
+        const validTags = tags.filter((tag) => semver.valid(tag.ref.replace("refs/tags/", "")));
+
+        core.info(validTags[0]);
         // Sort the tags by version number and return the tag with the highest version number
-        return tags.sort((a, b) => semver.rcompare(a.name, b.name))[0];
+        return validTags.sort((a, b) => semver.rcompare(a.ref, b.ref))[0];
     });
 
     // Wait for all promises to resolve and store the results in an array
@@ -26,7 +32,7 @@ async function run() {
 
     // Print the tag with the highest version number for each repository
     tags.forEach((tag, index) => {
-        console.log(`Tag with highest version number for repository ${repositoryNames[index]}: ${tag.name}`);
+        core.info(`Tag with highest version number for repository ${repositoryNames[index]}: ${tag.name}`);
     });
 }
 
