@@ -1,9 +1,20 @@
 const github = require("@actions/github");
 const core = require("@actions/core");
 const semver = require("semver");
+const fs = require('fs');
 
 async function run() {
-    const repositoryNames = ["hocs-casework", "hocs-frontend", "hocs-templates", "hocs-info-service", "hocs-docs"];
+
+
+    const doc = yaml.safeLoad(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
+
+    core.info(doc);
+
+    const repositoryNames = Object.keys(doc.versions).map((key) => {key.replaceAll("_", "-")});
+
+    repositoryNames.forEach((repositoryName) => {
+        core.info(repositoryName);
+    });
 
     const inputs = getActionInputs([
       { name: "github_token", options: { required: true } }
@@ -16,13 +27,9 @@ async function run() {
             repo: repositoryName,
         });
 
-        core.info(tags[0].name);
-
         // remove invalid semver tags
-        //semver: tag.ref?.replace(/^refs\/tags\//g, ""),
         const validTags = tags.filter((tag) => semver.valid(tag.name));
 
-        core.info(validTags[0].name);
         // Sort the tags by version number and return the tag with the highest version number
         return validTags.sort((a, b) => semver.rcompare(a.name, b.name))[0];
     });
