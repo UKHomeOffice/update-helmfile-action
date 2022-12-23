@@ -9,14 +9,14 @@ async function run() {
       { name: "github_token", options: { required: true } }
     ]);
 
-    const octokit = github.getOctokit(inputs.github_token)
-
     // Fetch the list of tags for each repository
     const tagsPromises = repositoryNames.map(async (repositoryName) => {
-        const { data: tags } = await octokit.repos.listTags({
+        const { data: tags } = await github.getOctokit(inputs.github_token).rest.git.listMatchingRefs({
             owner: github.context.payload.repository.owner.login,
-            repo: repositoryName
+            repo: repositoryName,
+            ref: "tags/",
         });
+
         // Sort the tags by version number and return the tag with the highest version number
         return tags.sort((a, b) => semver.rcompare(a.name, b.name))[0];
     });
