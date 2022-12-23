@@ -14,7 +14,7 @@ async function run() {
     const repositoryNames = Object.keys(doc.versions).map((key) => {key.replaceAll("_", "-")});
 
     repositoryNames.forEach((repositoryName) => {
-        console.log(repositoryName);
+        console.dir(repositoryName);
     });
 
     const inputs = getActionInputs([
