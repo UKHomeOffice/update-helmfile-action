@@ -16948,7 +16948,7 @@ const yaml = __nccwpck_require__(1917);
 async function run() {
 
 
-    const doc = yaml.safeLoad(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
+    const doc = yaml.load(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
 
     core.info(doc);
 
