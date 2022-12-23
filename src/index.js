@@ -2,6 +2,7 @@ const github = require("@actions/github");
 const core = require("@actions/core");
 const semver = require("semver");
 const fs = require('fs');
+const yaml = require('js-yaml');
 
 async function run() {
 
