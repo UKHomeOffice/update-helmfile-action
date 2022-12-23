@@ -1,0 +1,9 @@
+name: 'Update Helmfile Action'
+description: 'Action to fetch tags from a list of repositories, and update a helmfile versions.yaml'
+inputs:
+  github_token:
+    description: 'Github API token'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
