@@ -7,11 +7,12 @@ const yaml = require('js-yaml');
 async function run() {
 
 
-    const doc = yaml.load(fs.readFileSync( './environments/qa/versions.yaml', 'utf8'));
+    const QA_VERSIONS_PATH = './environments/qa/versions.yaml';
+
+    const doc = yaml.load(fs.readFileSync(QA_VERSIONS_PATH, 'utf8'));
 
     console.log(doc);
-
-    const repositoryNames = Object.keys(doc.versions).map((key) => key.replaceAll("_", "-"));
+    const repositoryNames = Object.keys(doc.versions);
 
     repositoryNames.forEach((repositoryName) => {
         console.dir(repositoryName);
@@ -20,8 +21,7 @@ async function run() {
     const inputs = getActionInputs([
       { name: "github_token", options: { required: true } }
     ]);
-
-    // Fetch the list of tags for each repository
+    
     const tagsPromises = repositoryNames.map(async (repositoryName) => {
         const { data: tags } = await github.getOctokit(inputs.github_token).rest.repos.listTags({
             owner: github.context.payload.repository.owner.login,
@@ -35,13 +35,16 @@ async function run() {
         return validTags.sort((a, b) => semver.rcompare(a.name, b.name))[0];
     });
 
-    // Wait for all promises to resolve and store the results in an array
     const tags = await Promise.all(tagsPromises);
 
-    // Print the tag with the highest version number for each repository
     tags.forEach((tag, index) => {
+        doc.versions[repositoryNames[index]].value = tag.name;
         core.info(`Tag with highest version number for repository ${repositoryNames[index]}: ${tag.name}`);
     });
+
+    console.log(doc)
+    fs.writeFileSync(QA_VERSIONS_PATH, yaml.dump(doc));
+
 }
 
 const getActionInputs = (variables) => {
