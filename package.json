@@ -1,7 +1,7 @@
 {
   "name": "update-helmfile",
   "version": "1.0.0",
-  "description": "Raise PR on helmfile with latest service version",
+  "description": "Update helmfile version.yaml with latest version tags for each repository",
   "scripts": {
     "lint": "eslint",
     "test": "jest",
