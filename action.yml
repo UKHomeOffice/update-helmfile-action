@@ -4,6 +4,9 @@ inputs:
   github_token:
     description: 'Github API token'
     required: true
+  version_file_path:
+    description: 'Relative path to the versions.yaml file'
+    required: true
 runs:
-  using: 'node16'
+  using: 'node18'
   main: 'dist/index.js'
