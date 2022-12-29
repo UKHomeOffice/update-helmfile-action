@@ -16962,7 +16962,7 @@ async function run() {
     const inputs = getActionInputs([
       { name: "github_token", options: { required: true } }
     ]);
-    
+
     const tagsPromises = repositoryNames.map(async (repositoryName) => {
         const { data: tags } = await github.getOctokit(inputs.github_token).rest.repos.listTags({
             owner: github.context.payload.repository.owner.login,
@@ -16979,7 +16979,7 @@ async function run() {
     const tags = await Promise.all(tagsPromises);
 
     tags.forEach((tag, index) => {
-        doc.versions[repositoryNames[index]].value = tag.name;
+        doc.versions[repositoryNames[index]] = tag.name;
         core.info(`Tag with highest version number for repository ${repositoryNames[index]}: ${tag.name}`);
     });
 
