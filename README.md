@@ -9,7 +9,7 @@ Action to update a version yaml file with the latest tagged semantic version of 
 | Input                                   | Description                                     | Default | Required |
 |-----------------------------------------|-------------------------------------------------|---------|----------|
 | [github_token](#github_token)           | Github API token                                |         | Yes      |
-| [version_file_path](#version_file_path) | Relative path to the version.yml file to update | any     | No       |
+| [version_file_path](#version_file_path) | Relative path to the version.yml file to update |     | Yes       |
 
 
 ### Detailed inputs
