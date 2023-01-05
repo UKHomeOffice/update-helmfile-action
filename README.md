@@ -105,7 +105,7 @@ jobs:
 
 ```
 
-### Generating dist/index.ts
+### Generating dist/index.js
 
 We use [ncc](https://github.com/vercel/ncc) to package the action into an executable file.
 This removes the need to either check in the node_modules folder or build the action prior to using.
