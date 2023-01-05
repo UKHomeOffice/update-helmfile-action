@@ -16756,10 +16756,9 @@ function run() {
         // Get the tags from the GH repos
         const tagsPromises = getTagsPromises(repositoryNames, inputs);
         // When we have all the tags, build the list for the helmfile doc
-        Promise.all(tagsPromises).then((tags) => {
-            tags.forEach((tag, index) => {
-                doc.versions[repositoryNames[index]] = tag.name;
-            });
+        const tags = yield Promise.all(tagsPromises);
+        tags.forEach((tag, index) => {
+            doc.versions[repositoryNames[index]] = tag.name;
         });
         external_fs_.writeFileSync(inputs.version_file_path, dump(doc));
     });

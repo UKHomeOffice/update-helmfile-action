@@ -44,10 +44,9 @@ async function run(): Promise<void> {
     const tagsPromises: Promise<Tag>[] = getTagsPromises(repositoryNames, inputs);
 
     // When we have all the tags, build the list for the helmfile doc
-    Promise.all(tagsPromises).then((tags: Tag[]) => {
-        tags.forEach((tag, index) => {
-            doc.versions[repositoryNames[index]] = tag.name;
-        });
+    const tags: Tag[] = await Promise.all(tagsPromises);
+    tags.forEach((tag: Tag, index: number) => {
+        doc.versions[repositoryNames[index]] = tag.name;
     });
 
     fs.writeFileSync(inputs.version_file_path, yaml.dump(doc));
