@@ -1,13 +1,12 @@
+type ActionInputKey = 'github_token' | 'version_file_path';
+
 export type ActionInputParam = {
-    name: string,
+    name: ActionInputKey,
     options: { required: boolean },
     default?: string
 }
 
-export type ActionInput = {
-    github_token: string,
-    version_file_path: string
-}
+export type ActionInput = Record<ActionInputKey, string>
 
 export type VersionDoc = {
     versions: RepositoryVersion[]
