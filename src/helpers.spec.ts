@@ -27,14 +27,12 @@ describe('Helpers', () => {
             reponame: '1.0.0',
             anothername: '1.0.0',
         } };
-        const repositoryNames: string[] = ['repo-name', 'another-name'];
+        const repositoryNames: string[] = ['reponame', 'anothername'];
 
-        const expected = {
-            versions: [
-                { 'repo-name': '2.0.0' },
-                { 'another-name': '1.0.0' },
-            ]
-        };
+        const expected = { versions: {
+            anothername: '1.0.0',
+            reponame: '2.0.0',
+        } };
 
         const result = updateVersions(tags, doc, repositoryNames);
 

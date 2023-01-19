@@ -9,13 +9,8 @@ export type ActionInputParam = {
 export type ActionInput = Record<ActionInputKey, string>
 
 export type VersionDoc = {
-    versions: Repository[]
+    versions: { [key: string]: string }
 }
-
-type RepositoryName = string;
-type RepositoryVersion = string;
-
-type Repository = Record<RepositoryName, RepositoryVersion>
 
 export type Tag = {
     name: string
