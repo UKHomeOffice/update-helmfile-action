@@ -1,5 +1,4 @@
 jest.mock('@actions/core');
-jest.mock('@actions/github');
 import { expect, jest, test, describe } from '@jest/globals';
 import { ActionInput } from './types';
 import { getActionInputs } from './helpers';

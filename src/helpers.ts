@@ -1,4 +1,4 @@
-import {ActionInput, ActionInputParam, Tag} from './types';
+import { ActionInput, ActionInputParam, Tag } from './types';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as semver from 'semver';
