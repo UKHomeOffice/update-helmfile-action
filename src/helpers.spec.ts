@@ -1,7 +1,7 @@
 jest.mock('@actions/core');
 import { expect, jest, test, describe } from '@jest/globals';
-import { ActionInput } from './types';
-import { getActionInputs } from './helpers';
+import { ActionInput, Tag, VersionDoc } from './types';
+import { getActionInputs, updateVersions } from './helpers';
 import * as core from '@actions/core';
 
 describe('Helpers', () => {
@@ -21,5 +21,24 @@ describe('Helpers', () => {
         expect(result).toStrictEqual(expected);
     });
 
+    test('can update version doc', () => {
+        const tags: Tag[] = [{ name: '2.0.0' }];
+        const doc: VersionDoc = { versions: {
+            reponame: '1.0.0',
+            anothername: '1.0.0',
+        } };
+        const repositoryNames: string[] = ['repo-name', 'another-name'];
+
+        const expected = {
+            versions: [
+                { 'repo-name': '2.0.0' },
+                { 'another-name': '1.0.0' },
+            ]
+        };
+
+        const result = updateVersions(tags, doc, repositoryNames);
+
+        expect(result).toStrictEqual(expected);
+    });
 });
 

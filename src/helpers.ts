@@ -1,4 +1,4 @@
-import { ActionInput, ActionInputParam, Tag } from './types';
+import { ActionInput, ActionInputParam, Tag, VersionDoc } from './types';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as semver from 'semver';
@@ -23,4 +23,12 @@ export const getTagsPromises = (repositoryNames: string[], inputs: ActionInput):
         });
         return tags.filter((tag) => semver.valid(tag.name)).sort((a, b) => semver.rcompare(a.name, b.name))[0];
     });
+};
+
+export const updateVersions = (tags: Tag[], doc: VersionDoc, repositoryNames: string[]): VersionDoc => {
+    tags.forEach((tag: Tag, index: number) => {
+        doc.versions[repositoryNames[index]] = tag.name;
+    });
+
+    return doc;
 };
