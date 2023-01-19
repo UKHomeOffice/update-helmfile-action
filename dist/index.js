@@ -12846,12 +12846,6 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/semver/index.js
-var semver = __nccwpck_require__(1383);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./node_modules/js-yaml/dist/js-yaml.mjs
@@ -13597,7 +13591,7 @@ var json = failsafe.extend({
   ]
 });
 
-var js_yaml_core = json;
+var core = json;
 
 var YAML_DATE_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -13934,7 +13928,7 @@ var set = new type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-var _default = js_yaml_core.extend({
+var _default = core.extend({
   implicit: [
     timestamp,
     merge
@@ -16658,7 +16652,7 @@ var Type                = type;
 var Schema              = schema;
 var FAILSAFE_SCHEMA     = failsafe;
 var JSON_SCHEMA         = json;
-var CORE_SCHEMA         = js_yaml_core;
+var CORE_SCHEMA         = core;
 var DEFAULT_SCHEMA      = _default;
 var load                = loader.load;
 var loadAll             = loader.loadAll;
@@ -16707,7 +16701,13 @@ var jsYaml = {
 /* harmony default export */ const js_yaml = ((/* unused pure expression or super */ null && (jsYaml)));
 
 
-;// CONCATENATED MODULE: ./src/index.ts
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var lib_core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/semver/index.js
+var semver = __nccwpck_require__(1383);
+;// CONCATENATED MODULE: ./src/helpers.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16720,21 +16720,9 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-
-
-const getTagsPromises = (repositoryNames, inputs) => {
-    const tagsPromises = repositoryNames.map((repositoryName) => __awaiter(void 0, void 0, void 0, function* () {
-        const { data: tags } = yield github.getOctokit(inputs.github_token).rest.repos.listTags({
-            owner: github.context.payload.repository.owner.login,
-            repo: repositoryName,
-        });
-        return tags.filter((tag) => semver.valid(tag.name)).sort((a, b) => semver.rcompare(a.name, b.name))[0];
-    }));
-    return tagsPromises;
-};
 const getActionInputs = (variables) => {
     return variables.reduce((obj, variable) => {
-        let value = core.getInput(variable.name, variable.options);
+        let value = lib_core.getInput(variable.name, variable.options);
         if (!value) {
             if (Object.prototype.hasOwnProperty.call(variable, 'default')) {
                 value = variable.default;
@@ -16743,24 +16731,56 @@ const getActionInputs = (variables) => {
         return Object.assign(obj, { [variable.name]: value });
     }, {});
 };
+const getTagsPromises = (repositoryNames, inputs) => {
+    return repositoryNames.map((repositoryName) => __awaiter(void 0, void 0, void 0, function* () {
+        const { data: tags } = yield github.getOctokit(inputs.github_token).rest.repos.listTags({
+            owner: github.context.payload.repository.owner.login,
+            repo: repositoryName,
+        });
+        return tags.filter((tag) => semver.valid(tag.name)).sort((a, b) => semver.rcompare(a.name, b.name))[0];
+    }));
+};
+const updateVersions = (tags, doc, repositoryNames) => {
+    tags.forEach((tag, index) => {
+        doc.versions[repositoryNames[index]] = tag.name;
+    });
+    return doc;
+};
+
+;// CONCATENATED MODULE: ./src/index.ts
+var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
 function run() {
-    return __awaiter(this, void 0, void 0, function* () {
+    return src_awaiter(this, void 0, void 0, function* () {
         // Get the GH token and version file path
         const inputs = getActionInputs([
             { name: 'github_token', options: { required: true } },
             { name: 'version_file_path', options: { required: true } },
         ]);
         // Get the repos to cycle through later
-        const doc = load(external_fs_.readFileSync(inputs.version_file_path, 'utf8'));
+        let doc = load(external_fs_.readFileSync(inputs.version_file_path, 'utf8'));
         const repositoryNames = Object.keys(doc.versions);
         // Get the tags from the GH repos
         const tagsPromises = getTagsPromises(repositoryNames, inputs);
         // When we have all the tags, build the list for the helmfile doc
-        const tags = yield Promise.all(tagsPromises);
-        tags.forEach((tag, index) => {
-            doc.versions[repositoryNames[index]] = tag.name;
-        });
-        external_fs_.writeFileSync(inputs.version_file_path, dump(doc));
+        try {
+            const tags = yield Promise.all(tagsPromises);
+            doc = updateVersions(tags, doc, repositoryNames);
+            external_fs_.writeFileSync(inputs.version_file_path, dump(doc));
+        }
+        catch (e) {
+            console.log('Failed to write version file');
+        }
     });
 }
 run();

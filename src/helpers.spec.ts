@@ -6,7 +6,11 @@ import * as core from '@actions/core';
 
 describe('Helpers', () => {
     test('can get the action input values', () => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         core.getInput.mockReturnValueOnce('mockedGitHubToken');
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         core.getInput.mockReturnValueOnce('mock/file/path');
         const expected: ActionInput = {
             github_token: 'mockedGitHubToken',
