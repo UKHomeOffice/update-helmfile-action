@@ -16731,18 +16731,18 @@ const getActionInputs = (variables) => {
         return Object.assign(obj, { [variable.name]: value });
     }, {});
 };
-const getTagsPromises = (repositoryNames, inputs) => {
+const getTagsPromises = (repositoryNames, services, inputs) => {
     return repositoryNames.map((repositoryName) => __awaiter(void 0, void 0, void 0, function* () {
         const { data: tags } = yield github.getOctokit(inputs.github_token).rest.repos.listTags({
             owner: github.context.payload.repository.owner.login,
-            repo: repositoryName,
+            repo: services.charts[repositoryName].service,
         });
         return tags.filter((tag) => semver.valid(tag.name)).sort((a, b) => semver.rcompare(a.name, b.name))[0];
     }));
 };
 const updateVersions = (tags, doc, repositoryNames) => {
     tags.forEach((tag, index) => {
-        doc.versions[repositoryNames[index]] = tag.name;
+        doc.charts[repositoryNames[index]].serviceVersion = tag.name;
     });
     return doc;
 };
@@ -16766,12 +16766,14 @@ function run() {
         const inputs = getActionInputs([
             { name: 'github_token', options: { required: true } },
             { name: 'version_file_path', options: { required: true } },
+            { name: 'service_file_path', options: { required: true } },
         ]);
         // Get the repos to cycle through later
+        let services = load(external_fs_.readFileSync(inputs.service_file_path, 'utf8'));
         let doc = load(external_fs_.readFileSync(inputs.version_file_path, 'utf8'));
-        const repositoryNames = Object.keys(doc.versions);
+        const repositoryNames = Object.keys(doc.charts);
         // Get the tags from the GH repos
-        const tagsPromises = getTagsPromises(repositoryNames, inputs);
+        const tagsPromises = getTagsPromises(repositoryNames, services, inputs);
         // When we have all the tags, build the list for the helmfile doc
         try {
             const tags = yield Promise.all(tagsPromises);
