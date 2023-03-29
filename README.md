@@ -9,7 +9,8 @@ Action to update a version yaml file with the latest tagged semantic version of 
 | Input                                   | Description                                     | Default | Required |
 |-----------------------------------------|-------------------------------------------------|---------|----------|
 | [github_token](#github_token)           | Github API token                                |         | Yes      |
-| [version_file_path](#version_file_path) | Relative path to the version.yml file to update |     | Yes       |
+| [version_file_path](#version_file_path) | Relative path to the versions.yml.gotmpl file to update |     | Yes       |
+| [service_file_path](#service_file_path) | Relative path to the chart.yml with the github to chart mapping |     | Yes       |
 
 
 ### Detailed inputs

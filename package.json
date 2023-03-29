@@ -1,6 +1,6 @@
 {
   "name": "update-helmfile",
-  "version": "1.0.0",
+  "version": "2.0.55",
   "description": "Update helmfile version.yaml with latest version tags for each repository",
   "scripts": {
     "lint": "eslint",

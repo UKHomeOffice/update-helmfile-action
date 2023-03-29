@@ -1,4 +1,4 @@
-type ActionInputKey = 'github_token' | 'version_file_path';
+type ActionInputKey = 'github_token' | 'version_file_path' | 'service_file_path';
 
 export type ActionInputParam = {
     name: ActionInputKey,
@@ -9,7 +9,11 @@ export type ActionInputParam = {
 export type ActionInput = Record<ActionInputKey, string>
 
 export type VersionDoc = {
-    versions: { [key: string]: string }
+    charts: { [key: string]: { serviceVersion: string; } }
+}
+
+export type ServiceDoc = {
+    charts: { [key: string]: { service : string } }
 }
 
 export type Tag = {
