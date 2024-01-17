@@ -9,7 +9,7 @@ updates:
     pull-request-branch-name:
       separator: "-"
     reviewers:
-      - "UKHomeOffice/sas-github-workflow"
+      - "UKHomeOffice/hocs-developers"
     labels:
       - "patch"
       - "dependencies"
@@ -22,7 +22,7 @@ updates:
     pull-request-branch-name:
       separator: "-"
     reviewers:
-      - "UKHomeOffice/sas-github-workflow"
+      - "UKHomeOffice/hocs-developers"
     labels:
       - "patch"
       - "dependencies"
